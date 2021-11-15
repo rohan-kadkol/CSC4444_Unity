@@ -10,8 +10,8 @@ import numpy as np
 
 from log_utils import logger, mean_val
 
-# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-device = "cpu"
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# device = "cpu"
 
 NUM_STATES = 8
 NUM_ACTIONS = 5
@@ -73,7 +73,7 @@ class DQNAgent():
     def __init__(self):
 
         self.epsilon = 1
-        self.epsilon_decay = 0.998
+        self.epsilon_decay = 0.9995
         self.epsilon_min = 0.05
         self.gamma = 0.95
 
@@ -101,15 +101,15 @@ class DQNAgent():
 
     def index_to_action(self, index):
         if index == 0:
-            return -1
+            return -3
         elif index == 1:
-            return -0.5
+            return -1
         elif index == 2:
             return 0
         elif index == 3:
-            return 0.5
-        else:
             return 1
+        else:
+            return 3
 
     def select_action(self, state):
         steps_done = 0

@@ -1,9 +1,15 @@
 #%%
 
+# Info: Stopped charging at episode ~ 2660
+
+#%%
+
 import mlagents
 import random
 import numpy as np
 from mlagents_envs.environment import UnityEnvironment as UE
+import torch
+from log_utils import logger, mean_val
 
 #%%
 
@@ -73,15 +79,23 @@ from tqdm import tqdm
 
 agent = DQNAgent()
 
-for episode in tqdm(range(1000)):
+for episode in tqdm(range(10000)):
     env.reset()
     decision_steps, terminal_steps = env.get_steps(behavior_name)
     current_state = decision_steps.obs[0].reshape(8,)
     tracked_agent = -1 # -1 indicates not yet tracking
     done = False # For the tracked_agent
     episode_rewards = 0 # For the tracked_agent
+    mean_loss = mean_val()
 
-    agent.epsilon = agent.epsilon * agent.epsilon_decay
+    agent.epsilon *= agent.epsilon_decay
+    if agent.epsilon < agent.epsilon_min:
+        agent.epsilon = agent.epsilon_min
+    print(agent.epsilon)
+
+    if episode % 500 == 0:
+        torch.save(agent.policy_net.state_dict(), f"./models/policy_net_{episode}")
+        torch.save(agent.target_net.state_dict(), f"./models/target_net_{episode}")
 
     while not done:
         # Track the first agent we see if not tracking
@@ -117,9 +131,24 @@ for episode in tqdm(range(1000)):
         episode_rewards += reward
 
         agent.memory.push((current_state, chosen_action_int, reward, next_state, done))
-        agent.optimize_model()
+        loss = agent.optimize_model()
+        mean_loss.append(loss)
+        current_state = next_state
 
-    print(f"Total rewards for episode {episode} is {episode_rewards}")
+        agent.step_counter = agent.step_counter + 1
+        if agent.step_counter > agent.update_target_step:
+            agent.target_net.load_state_dict(agent.policy_net.state_dict())
+            agent.step_counter = 0
+            # print('updated target model')
+        if done:
+            break
+
+        agent.log.add_item('real_return', episode_rewards)
+        agent.log.add_item('combined_return', episode_rewards)
+        agent.log.add_item('avg_loss', mean_loss.get())
+
+    # print(f"Total rewards for episode {episode} is {episode_rewards}")
+    print('epoch: {}. return: {}'.format(episode, np.round(agent.log.get_current('real_return')), 2))
 
 #%%
 
