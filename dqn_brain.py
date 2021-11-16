@@ -73,7 +73,8 @@ class DQNAgent():
     def __init__(self):
 
         self.epsilon = 1
-        self.epsilon_decay = 0.9995
+        # self.epsilon_decay = 0.9995
+        self.epsilon_decay = 0.9990
         self.epsilon_min = 0.05
         self.gamma = 0.95
 
@@ -84,7 +85,9 @@ class DQNAgent():
 
         self.policy_net = Network().to(device)
         self.target_net = Network().to(device)
-        self.target_net.load_state_dict(self.policy_net.state_dict())
+        self.policy_net.load_state_dict(torch.load("./models_4/policy_net_1000"))
+        self.target_net.load_state_dict(torch.load("./models_4/target_net_1000"))
+        # self.target_net.load_state_dict(self.policy_net.state_dict())
         self.optimizer = torch.optim.Adam(self.policy_net.parameters(), lr=0.001)
 
         self.epsi_high = 0.9
