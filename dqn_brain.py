@@ -85,8 +85,8 @@ class DQNAgent():
 
         self.policy_net = Network().to(device)
         self.target_net = Network().to(device)
-        self.policy_net.load_state_dict(torch.load("./models_4/policy_net_1000"))
-        self.target_net.load_state_dict(torch.load("./models_4/target_net_1000"))
+        self.policy_net.load_state_dict(torch.load("./models_5/policy_net_3000"))
+        self.target_net.load_state_dict(torch.load("./models_5/target_net_3000"))
         # self.target_net.load_state_dict(self.policy_net.state_dict())
         self.optimizer = torch.optim.Adam(self.policy_net.parameters(), lr=0.001)
 
