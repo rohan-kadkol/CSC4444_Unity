@@ -82,7 +82,11 @@ agent = DQNAgent()
 for episode in tqdm(range(10000)):
     env.reset()
     decision_steps, terminal_steps = env.get_steps(behavior_name)
+
     current_state = decision_steps.obs[0].reshape(8,)
+    current_state_mod = np.where(current_state[3:] == -1, 35, current_state[3:])
+    current_state = np.concatenate((current_state[:3], current_state_mod))
+
     tracked_agent = -1 # -1 indicates not yet tracking
     done = False # For the tracked_agent
     episode_rewards = 0 # For the tracked_agent
@@ -97,7 +101,9 @@ for episode in tqdm(range(10000)):
         torch.save(agent.policy_net.state_dict(), f"./models/policy_net_{episode}")
         torch.save(agent.target_net.state_dict(), f"./models/target_net_{episode}")
 
+    time = -1
     while not done:
+        time += 1
         # Track the first agent we see if not tracking
         # Note : len(decision_steps) = [number of agents that requested a decision]
         if tracked_agent == -1 and len(decision_steps) >= 1:
@@ -117,6 +123,8 @@ for episode in tqdm(range(10000)):
         decision_steps, terminal_steps = env.get_steps(behavior_name)
 
         next_state = decision_steps.obs[0].reshape(8,)
+        next_state_mod = np.where(next_state[3:] == -1, 35, next_state[3:])
+        next_state = np.concatenate((next_state[:3], next_state_mod))
 
         # print(decision_steps.obs)
         reward = 0
@@ -128,6 +136,8 @@ for episode in tqdm(range(10000)):
             reward = terminal_steps[tracked_agent].reward
 #             print(terminal_steps[tracked_agent].reward)
             done = True
+        # print(time)
+        reward *= 2
         episode_rewards += reward
 
         agent.memory.push((current_state, chosen_action_int, reward, next_state, done))
@@ -139,7 +149,7 @@ for episode in tqdm(range(10000)):
         if agent.step_counter > agent.update_target_step:
             agent.target_net.load_state_dict(agent.policy_net.state_dict())
             agent.step_counter = 0
-            # print('updated target model')
+            print('updated target model')
         if done:
             break
 
@@ -148,7 +158,7 @@ for episode in tqdm(range(10000)):
         agent.log.add_item('avg_loss', mean_loss.get())
 
     # print(f"Total rewards for episode {episode} is {episode_rewards}")
-    print('epoch: {}. return: {}'.format(episode, np.round(agent.log.get_current('real_return')), 2))
+    print('epoch: {}. return: {}. avg_loss: {}.'.format(episode, np.round(agent.log.get_current('real_return')), np.round(agent.log.get_current('avg_loss'))))
 
 #%%
 
