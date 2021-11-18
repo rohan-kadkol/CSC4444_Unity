@@ -75,7 +75,7 @@ class DQNAgent():
         self.epsilon = 1
         # self.epsilon_decay = 0.9995
         # self.epsilon_decay = 0.99975
-        self.epsilon_decay = 0.9975
+        self.epsilon_decay = 0.995
         self.epsilon_min = 0.1
         self.gamma = 0.95
 

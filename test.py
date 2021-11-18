@@ -94,7 +94,8 @@ for episode in tqdm(range(10000)):
 
     agent.epsilon *= agent.epsilon_decay
     if agent.epsilon < agent.epsilon_min:
-        agent.epsilon = agent.epsilon_min
+        # agent.epsilon = agent.epsilon_min
+        agent.epsilon = 1
     print(agent.epsilon)
 
     if episode % 500 == 0:
