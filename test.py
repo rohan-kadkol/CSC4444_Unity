@@ -95,7 +95,7 @@ for episode in tqdm(range(10000)):
     agent.epsilon *= agent.epsilon_decay
     if agent.epsilon < agent.epsilon_min:
         # agent.epsilon = agent.epsilon_min
-        agent.epsilon = 1
+        agent.epsilon = 0.5
     print(agent.epsilon)
 
     if episode % 500 == 0:
@@ -138,7 +138,7 @@ for episode in tqdm(range(10000)):
 #             print(terminal_steps[tracked_agent].reward)
             done = True
         # print(time)
-        reward *= 2
+        reward *= 3
         episode_rewards += reward
 
         agent.memory.push((current_state, chosen_action_int, reward, next_state, done))

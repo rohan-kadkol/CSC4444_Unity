@@ -75,9 +75,9 @@ class DQNAgent():
         self.epsilon = 1
         # self.epsilon_decay = 0.9995
         # self.epsilon_decay = 0.99975
-        self.epsilon_decay = 0.995
+        self.epsilon_decay = 0.9945
         self.epsilon_min = 0.1
-        self.gamma = 0.95
+        self.gamma = 0.97
 
         self.step_counter = 0
         self.update_target_step = 500
@@ -134,7 +134,7 @@ class DQNAgent():
         if len(self.memory) < BATCH_SIZE:
             return 0
 
-        transitions = self.memory.sample(BATCH_SIZE)
+        # transitions = self.memory.sample(BATCH_SIZE)
         # batch = Transition(*zip(*transitions))
 
         K = BATCH_SIZE
