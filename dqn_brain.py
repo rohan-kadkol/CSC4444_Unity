@@ -15,18 +15,18 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 NUM_STATES = 8
 NUM_ACTIONS = 5
-BATCH_SIZE = 128
+BATCH_SIZE = 64
 
 
 class Network(nn.Module):
     def __init__(self):
         super().__init__()
 
-        self.h1 = nn.Linear(8, 128)
-        self.h2 = nn.Linear(128, 128)
-        self.h3 = nn.Linear(128, 128)
-        self.h4 = nn.Linear(128, 64)
-        self.h5 = nn.Linear(64, 5)
+        self.h1 = nn.Linear(8, 512)
+        self.h2 = nn.Linear(512, 512)
+        self.h3 = nn.Linear(512, 512)
+        self.h4 = nn.Linear(512, 256)
+        self.h5 = nn.Linear(256, 5)
 
         # Define sigmoid activation and softmax output
         # self.sigmoid = nn.Sigmoid()
@@ -74,7 +74,7 @@ class DQNAgent():
 
         self.epsilon = 1
         # self.epsilon_decay = 0.9995
-        self.epsilon_decay = 0.99925
+        self.epsilon_decay = 0.9995
         self.epsilon_min = 0.05
         self.gamma = 0.95
 
