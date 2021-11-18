@@ -22,11 +22,11 @@ class Network(nn.Module):
     def __init__(self):
         super().__init__()
 
-        self.h1 = nn.Linear(8, 64)
-        self.h2 = nn.Linear(64, 64)
-        self.h3 = nn.Linear(64, 64)
-        self.h4 = nn.Linear(64, 32)
-        self.h5 = nn.Linear(32, 5)
+        self.h1 = nn.Linear(8, 128)
+        self.h2 = nn.Linear(128, 128)
+        self.h3 = nn.Linear(128, 128)
+        self.h4 = nn.Linear(128, 64)
+        self.h5 = nn.Linear(64, 5)
 
         # Define sigmoid activation and softmax output
         # self.sigmoid = nn.Sigmoid()
@@ -74,7 +74,7 @@ class DQNAgent():
 
         self.epsilon = 1
         # self.epsilon_decay = 0.9995
-        self.epsilon_decay = 0.9990
+        self.epsilon_decay = 0.99925
         self.epsilon_min = 0.05
         self.gamma = 0.95
 
@@ -85,9 +85,9 @@ class DQNAgent():
 
         self.policy_net = Network().to(device)
         self.target_net = Network().to(device)
-        self.policy_net.load_state_dict(torch.load("./models_5/policy_net_3000"))
-        self.target_net.load_state_dict(torch.load("./models_5/target_net_3000"))
-        # self.target_net.load_state_dict(self.policy_net.state_dict())
+        # self.policy_net.load_state_dict(torch.load("./models_5/policy_net_3000"))
+        # self.target_net.load_state_dict(torch.load("./models_5/target_net_3000"))
+        self.target_net.load_state_dict(self.policy_net.state_dict())
         self.optimizer = torch.optim.Adam(self.policy_net.parameters(), lr=0.001)
 
         self.epsi_high = 0.9
