@@ -15,7 +15,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 NUM_STATES = 8
 NUM_ACTIONS = 5
-BATCH_SIZE = 64
+BATCH_SIZE = 32
 
 
 class Network(nn.Module):
@@ -74,7 +74,7 @@ class DQNAgent():
 
         self.epsilon = 1
         # self.epsilon_decay = 0.9995
-        self.epsilon_decay = 0.9995
+        self.epsilon_decay = 0.99975
         self.epsilon_min = 0.05
         self.gamma = 0.95
 
@@ -88,7 +88,7 @@ class DQNAgent():
         # self.policy_net.load_state_dict(torch.load("./models_5/policy_net_3000"))
         # self.target_net.load_state_dict(torch.load("./models_5/target_net_3000"))
         self.target_net.load_state_dict(self.policy_net.state_dict())
-        self.optimizer = torch.optim.Adam(self.policy_net.parameters(), lr=0.01)
+        self.optimizer = torch.optim.Adam(self.policy_net.parameters(), lr=0.001)
 
         self.epsi_high = 0.9
         self.epsi_low = 0.05
