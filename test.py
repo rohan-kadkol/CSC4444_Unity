@@ -84,8 +84,9 @@ for episode in tqdm(range(10000)):
     decision_steps, terminal_steps = env.get_steps(behavior_name)
 
     current_state = decision_steps.obs[0].reshape(8,)
-    current_state_mod = np.where(current_state[3:] == -1, 35, current_state[3:])
-    current_state = np.concatenate((current_state[:3], current_state_mod))
+    current_state = current_state[3:]
+    current_state_mod = np.where(current_state == -1, 35, current_state)
+    # current_state = np.concatenate((current_state[:3], current_state_mod))
 
     tracked_agent = -1 # -1 indicates not yet tracking
     done = False # For the tracked_agent
@@ -98,7 +99,7 @@ for episode in tqdm(range(10000)):
         # agent.epsilon = 0.5
     print(agent.epsilon)
 
-    if episode % 500 == 0:
+    if episode % 100 == 0:
         torch.save(agent.policy_net.state_dict(), f"./models/policy_net_{episode}")
         torch.save(agent.target_net.state_dict(), f"./models/target_net_{episode}")
 
@@ -124,8 +125,9 @@ for episode in tqdm(range(10000)):
         decision_steps, terminal_steps = env.get_steps(behavior_name)
 
         next_state = decision_steps.obs[0].reshape(8,)
-        next_state_mod = np.where(next_state[3:] == -1, 35, next_state[3:])
-        next_state = np.concatenate((next_state[:3], next_state_mod))
+        next_state = next_state[3:]
+        next_state_mod = np.where(next_state == -1, 35, next_state)
+        # next_state = np.concatenate((next_state[:3], next_state_mod))
 
         # print(decision_steps.obs)
         reward = 0
@@ -138,6 +140,13 @@ for episode in tqdm(range(10000)):
 #             print(terminal_steps[tracked_agent].reward)
             done = True
         # print(time)
+        if reward == 10:
+            reward = +1
+        elif reward == -20:
+            reward = -200
+            print(f'hit wall: {reward}')
+        else:
+            reward = +1
         reward *= 5
         episode_rewards += reward
 

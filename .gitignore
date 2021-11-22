@@ -1,6 +1,7 @@
 .idea
 __pycache__
 outputs
+models
 models_10
 models_11
 models_12

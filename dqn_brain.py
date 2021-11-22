@@ -13,7 +13,7 @@ from log_utils import logger, mean_val
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # device = "cpu"
 
-NUM_STATES = 8
+NUM_STATES = 5
 NUM_ACTIONS = 5
 BATCH_SIZE = 32
 
@@ -22,7 +22,7 @@ class Network(nn.Module):
     def __init__(self):
         super().__init__()
 
-        self.h1 = nn.Linear(8, 512)
+        self.h1 = nn.Linear(5, 512)
         self.h2 = nn.Linear(512, 512)
         self.h3 = nn.Linear(512, 512)
         self.h4 = nn.Linear(512, 256)
@@ -75,6 +75,7 @@ class DQNAgent():
         self.epsilon = 1
         # self.epsilon_decay = 0.9995
         # self.epsilon_decay = 0.99975
+        # self.epsilon_decay = 0.99415
         self.epsilon_decay = 0.99415
         self.epsilon_min = 0.1
         self.gamma = 0.97
